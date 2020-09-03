@@ -1,0 +1,25 @@
+.background-color-package { background-color: black !important; }
+.background-color-forward { background-color: #FEB02F !important; }
+.background-color-hold { background-color: #804DDF !important; }
+.background-color-snapsend { background-color: #3380DA !important; }
+.background-color-destroy { background-color: #FD1D59 !important; }
+
+.border-color-package { border: 1px solid black !important; }
+.border-color-forward { border: 1px solid #FEB02F !important; }
+.border-color-hold { border: 1px solid #804DDF !important; }
+.border-color-snapsend { border: 1px solid #3380DA !important; }
+.border-color-destroy { border: 1px solid #FD1D59 !important; }
+
+.color-package { color: black !important; }
+.color-forward { color: #FEB02F !important; }
+.color-hold { color: #804DDF !important; }
+.color-snapsend { color: #3380DA !important; }
+.color-destroy { color: #FD1D59 !important; }
+
+.MuiMenu-paper {
+    width: 300px !important;
+}
+
+.MuiDialog-paperWidthSm {
+    border-radius: 20px !important;
+}
