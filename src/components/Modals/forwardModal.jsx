@@ -27,12 +27,16 @@ class ForwardModal extends Component {
             error: false,
             shippingAnchor: null,
             checkedItem: 'Standard',
+            hasAddress: false,
+            enableAddress: true
         }
     }
 
     componentDidMount() {
         this.setState({
-            checkedItem: this.props.shippingMethodsList.length > 0 ? this.props.shippingMethodsList[0].value : ""
+            checkedItem: this.props.shippingMethodsList.length > 0 ? this.props.shippingMethodsList[0].value : "",
+            hasAddress: this.props.packageDetails.has_address ? true : this.props.packageDetails.has_address,//swap
+            enableAddress: this.props.packageDetails && this.props.packageDetails.has_address !== true ? false : true
         })
     }
 
@@ -85,10 +89,10 @@ class ForwardModal extends Component {
     }
 
     handleForwardAction = () => {
-        const { name, address, checkedItem } = this.state;
+        const { name, address, checkedItem, hasAddress, enableAddress } = this.state;
         const { handleConfirmation, shippingMethodsList } = this.props;
         const labelId = shippingMethodsList.length > 0 && shippingMethodsList.find(item => item.value === checkedItem).label_id;
-        if (name === '' || address === '') {
+        if (name === '' || (hasAddress === false && address === '')) {
             this.setState({
                 error: true
             })
@@ -100,11 +104,16 @@ class ForwardModal extends Component {
                     name,
                     address,
                     shipping_method: checkedItem,
-                    label_id: labelId
+                    label_id: labelId,
+                    use_existing_address: enableAddress
                 }
                 handleConfirmation('forward', forwardObj);
             })
         }
+    }
+
+    setEnableAddress = (flag) => {
+        this.setState({ enableAddress: flag })
     }
 
     render() {
@@ -114,6 +123,8 @@ class ForwardModal extends Component {
             address,
             checkedItem,
             shippingAnchor,
+            hasAddress,
+            enableAddress
         } = this.state;
         const {
             modalState,
@@ -135,7 +146,7 @@ class ForwardModal extends Component {
         const shippingOpen = false;
         return (
             <Dialog onClose={(modalState === 'loading' || modalState === 'success') ? () => { } : closeModal} open={true}>
-                <div className="generic-modal" style={{ height: 500 }}>
+                <div className={hasAddress ? "generic-modal-has-address" : "generic-modal"} style={{ height: 500 }}>
                     {/* {
                         modalState === 'success' &&
                         <div className="close-icon">
@@ -163,7 +174,14 @@ class ForwardModal extends Component {
                                     className="address-field"
                                     value={address}
                                     onChange={(event) => this.handleValueChange(event, 'address')}
+                                    disabled={enableAddress}
                                 />
+                                {
+                                    hasAddress && (<div className="address-checkbox">
+                                        <input type="checkbox" id="addressCheck" name="addressCheck" value={!enableAddress === true} onClick={() => this.setEnableAddress(!enableAddress)} />
+                                        <label for="addressCheck" className="address-checkbox-label"> Use my pre-saved address information</label><br />
+                                    </div>)
+                                }
                                 <div
                                     className="shipping-method-closed"
                                     onClick={(event) => this.handleShippingDropdown(event)}
@@ -230,6 +248,7 @@ class ForwardModal extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    shippingMethodsList: state.actionItems.actionLabel
+    shippingMethodsList: state.actionItems.actionLabel,
+    packageDetails: state.actionItems.packageDetails
 })
 export default connect(mapStateToProps)(ForwardModal)

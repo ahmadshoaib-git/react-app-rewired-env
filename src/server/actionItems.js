@@ -35,6 +35,7 @@ export const setPackageStatus = (type, forwardData) => {
       shipping_method: forwardData.shipping_method,
     };
     urlParams.label_id = forwardData.label_id;
+    urlParams.use_existing_address = forwardData.use_existing_address;
   }
   return new Promise((resolve, reject) => {
     axios
