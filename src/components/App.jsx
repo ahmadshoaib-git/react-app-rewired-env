@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import { configureStore, history } from '../redux/store';
 import ActionPage from './ActionPage';
 import './App.css';
 // import logo from '../assets/images/logo.svg';
 
 class App extends Component {
   render() {
-    console.log(process.env.REACT_APP_ENV);
-    console.log(process.env.NODE_ENV);
     return (
-      <ActionPage />
+      <Provider store={configureStore()}>
+        <ActionPage />
+      </Provider>
     );
   }
 }

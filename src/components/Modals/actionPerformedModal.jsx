@@ -10,7 +10,6 @@ import { getBorderClassName } from '../../utils/utils.functions';
 getBorderClassName
 function ActionPerformedModal(props) {
     const { open, packageType } = props;
-    console.log(packageType);
 
     return (
         <Dialog open={open}>

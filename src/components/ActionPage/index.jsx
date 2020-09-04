@@ -1,8 +1,10 @@
 import React, { Fragment, Component } from 'react';
+import { connect } from 'react-redux';
 import { CircularProgress, Divider } from "@material-ui/core";
 import PackageInfoComponent from './packageInfo';
 import ActionItems from './packageActionItems';
 import { packageActionRequestStatus, packageActionRequestStatusOthers } from '../../utils/utils.functions';
+import { action_setActionItems, action_setActionLabel, action_setActionDetail } from '../../redux/actionItems/actionItems.actions'
 import ActionItemsFooter from './footer';
 import { getPackageDetails } from '../../server/actionItems';
 import DefaultModal from '../Modals/defaultModal';
@@ -40,6 +42,9 @@ class ActionPage extends Component {
                 const packageStatuses = { ...packageActionRequestStatus, ...packageActionRequestStatusOthers };
                 // const packageStatuses = {...packageActionRequestStatus};
                 const requestedPackage = Object.values(packageStatuses).filter(item => item.toLowerCase() === currentStatus).length > 0;
+                this.props.action_setActionItems(response.action_items);
+                this.props.action_setActionLabel(response.action_label);
+                this.props.action_setActionDetail(response.package_details[0]);
                 if (requestedPackage) {
                     this.setState({
                         loading: false,
@@ -72,7 +77,6 @@ class ActionPage extends Component {
             showActionItems,
             requestedPackage,
         } = this.state;
-
         const mainImageURL = (packageDetails && packageDetails.package_details && packageDetails.package_details[0].package_thumbnail)
             ? packageDetails.package_details[0].package_thumbnail.replace('_thumb', '')
             : null;
@@ -169,5 +173,8 @@ class ActionPage extends Component {
         )
     }
 }
-
-export default ActionPage;
+const mapDispatchToProps = ({ action_setActionItems, action_setActionLabel, action_setActionDetail })
+const mapStateToProps = (state) => ({
+    actionItems: state
+})
+export default connect(mapStateToProps, mapDispatchToProps)(ActionPage)

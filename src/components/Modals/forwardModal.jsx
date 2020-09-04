@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -12,7 +13,7 @@ import { CircularProgress } from "@material-ui/core";
 import {
     getBorderClassName,
     getColorClassName,
-    shippingMethodsList,
+    // shippingMethodsList,
     getBackgroundClassName
 } from '../../utils/utils.functions';
 import './styles.css';
@@ -27,6 +28,12 @@ class ForwardModal extends Component {
             shippingAnchor: null,
             checkedItem: 'Standard',
         }
+    }
+
+    componentDidMount() {
+        this.setState({
+            checkedItem: this.props.shippingMethodsList.length > 0 ? this.props.shippingMethodsList[0].value : ""
+        })
     }
 
     handleShippingDropdown = (event) => {
@@ -79,7 +86,8 @@ class ForwardModal extends Component {
 
     handleForwardAction = () => {
         const { name, address, checkedItem } = this.state;
-        const { handleConfirmation } = this.props;
+        const { handleConfirmation, shippingMethodsList } = this.props;
+        const labelId = shippingMethodsList.length > 0 && shippingMethodsList.find(item => item.value === checkedItem).label_id;
         if (name === '' || address === '') {
             this.setState({
                 error: true
@@ -91,7 +99,8 @@ class ForwardModal extends Component {
                 const forwardObj = {
                     name,
                     address,
-                    shipping_method: checkedItem
+                    shipping_method: checkedItem,
+                    label_id: labelId
                 }
                 handleConfirmation('forward', forwardObj);
             })
@@ -104,13 +113,15 @@ class ForwardModal extends Component {
             error,
             address,
             checkedItem,
-            shippingAnchor
+            shippingAnchor,
         } = this.state;
         const {
             modalState,
             closeModal,
             handleConfirmation,
+            shippingMethodsList
         } = this.props;
+
         let { title } = this.props;
         title = title.toLowerCase();
         const borderStyle = getBorderClassName(title);
@@ -169,13 +180,13 @@ class ForwardModal extends Component {
                                     style={{ marginTop: 47 }}
                                 >
                                     {
-                                        shippingMethodsList.map((item, index) => {
-                                            const check = item.name === checkedItem;
+                                        shippingMethodsList.length > 0 && shippingMethodsList.map((item, index) => {
+                                            const check = item.value === checkedItem;
                                             return (
-                                                <MenuItem key={`menu-item-${item.name}-${index}`} onClick={() => this.handleDropdownSelection(item.name)}>
+                                                <MenuItem key={`menu-item-${item.value}-${index}`} onClick={() => this.handleDropdownSelection(item.value)}>
                                                     <div className="each-shipping-method">
-                                                        <input type="radio" checked={check} onChange={() => this.handleDropdownSelection(item.name)} />
-                                                        <p> {item.name} </p>
+                                                        <input type="radio" checked={check} onChange={() => this.handleDropdownSelection(item.value)} />
+                                                        <p> {item.value} </p>
                                                     </div>
                                                 </MenuItem>
                                             )
@@ -191,7 +202,7 @@ class ForwardModal extends Component {
                                     <p className="error-text"> {error ? "Name and Address cannot be empty" : "Something went wrong, please try again!"} </p>
                                 }
                                 {
-                                    modalState !== 'succes' &&
+                                    modalState !== 'success' &&
                                     <div className="action-buttons">
                                         <button
                                             onClick={closeModal}
@@ -218,4 +229,7 @@ class ForwardModal extends Component {
     }
 }
 
-export default ForwardModal;
+const mapStateToProps = (state) => ({
+    shippingMethodsList: state.actionItems.actionLabel
+})
+export default connect(mapStateToProps)(ForwardModal)

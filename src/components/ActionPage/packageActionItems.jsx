@@ -62,7 +62,6 @@ class ActionItems extends Component {
         })
         setPackageStatus(type, forwardData)
             .then(response => {
-                console.log(response);
                 this.setState({
                     modalState: 'success',
                     // showActionItems: false,
@@ -110,11 +109,11 @@ class ActionItems extends Component {
                     {
                         showActionItems && actions.snapsend &&
                         <div className="each-action-item" style={{ width: `calc(100% / ${actionsCount})` }}>
-                            <img 
-                            src={ACTION_ITEM_SNAP_SEND_LOGO} 
-                            alt="Snap and Send" 
-                            // alt="Scan and Send" 
-                            onClick={() => this.handleActionItemClick('snapsend')} />
+                            <img
+                                src={ACTION_ITEM_SNAP_SEND_LOGO}
+                                alt="Snap and Send"
+                                // alt="Scan and Send" 
+                                onClick={() => this.handleActionItemClick('snapsend')} />
                             <p> Snap & Send </p>
                             {/* <p> Scan & Send </p> */}
                         </div>

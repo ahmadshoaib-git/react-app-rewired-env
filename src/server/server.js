@@ -22,7 +22,7 @@ export const getBaseURL = () => {
   let domain = null;
   switch (env) {
     case "dev":
-      domain = "demo/";
+      domain = "dev/";
       break;
     case "qa":
       domain = "qa/";
@@ -34,11 +34,9 @@ export const getBaseURL = () => {
       domain = "demo/";
       break;
     default:
-      domain = "demo/";
+      domain = "dev/";
       break;
   }
-  console.log(process.env.REACT_APP_ENV);
-  console.log(process.env.REACT_APP_BASE_URL);
   return `${base}${domain}`;
 };
 
